@@ -13,6 +13,20 @@ class Query(graphene.ObjectType):
     disease = graphene.Node.Field(DiseaseNode)
     all_diseases = DjangoFilterConnectionField(DiseaseNode)
 
+    user = graphene.Field(UserNode)
+
+    def resolve_user(self, args, context, info):
+        user = context.user
+        if user.is_anonymous():
+            anonymous = User.objects.get(pk=2)
+            print(anonymous)
+            return anonymous
+        else:
+            print(user.id)
+            it = User.objects.get(pk=user.id)
+            print(it)
+            return it
+
 
 
 schema = graphene.Schema(query=Query)

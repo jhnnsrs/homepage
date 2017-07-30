@@ -13,11 +13,18 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
+from django.contrib.auth.views import login, logout
 from graphene_django.views import GraphQLView
 
 urlpatterns = [
+
+    url(r'^', include('app.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^graphql',GraphQLView.as_view(graphiql=True)),
+    url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    url(r'^login/$', login, name="my_login"),
+    url(r'^accounts/login/$', login, {'template_name': 'admin/login.html'}),
+    url(r'^accounts/logout/$', logout)
 ]

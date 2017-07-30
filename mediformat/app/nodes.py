@@ -1,4 +1,6 @@
 import graphene
+from django.contrib.auth.models import User
+
 from .models import *
 from graphene import Node
 from  graphene_django import DjangoObjectType
@@ -9,6 +11,13 @@ class MessageNode(DjangoObjectType):
         model = Message
         interfaces = (Node,)
         filter_fields = ['name', 'id']
+
+class UserNode(DjangoObjectType):
+    class Meta:
+        model = User
+        interfaces = (Node,)
+
+
 
 class NameNode(DjangoObjectType):
     class Meta:
@@ -30,5 +39,6 @@ class SymptomNode(DjangoObjectType):
 
     associateddiseases = DjangoFilterConnectionField(DiseaseNode)
 
-    def resolve_associateddiseases(self, *args):
+    def resolve_associateddiseases(self, args, context, info):
+        print(context.user)
         return self.associateddiseases.all()
